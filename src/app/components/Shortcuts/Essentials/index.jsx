@@ -6,15 +6,8 @@ import linkedinIcon from "../../../assets/svgs/linkedin.svg";
 import Image from "next/image";
 
 const openInNewTab = (url) => {
-  console.log("type of chrome", typeof chrome, chrome);
-  if (typeof chrome !== "undefined" && chrome.tabs) {
-    console.log(1);
-    chrome.tabs.create({ url });
-  } else {
-    // Fallback for web version
-    console.log(2);
-    window.open(url, "_blank", "noopener,noreferrer");
-  }
+  console.log("Opening URL:", url);
+  window.open(url, "_blank", "noopener,noreferrer");
 };
 
 export default function EssentialShortcuts() {
