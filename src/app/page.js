@@ -1,5 +1,7 @@
+"use client";
 import Image from "next/image";
 import EssentialShortcuts from "./components/Shortcuts/Essentials";
+import CardsSection from "./components/CardsSection";
 
 export default function Home() {
   return (
@@ -14,6 +16,7 @@ export default function Home() {
           height={38}
           priority
         />
+        <CardsSection />
       </main>
     </div>
   );
