@@ -29,12 +29,24 @@ export default function CardsSection() {
   if (isLoading) return <div>Loading articles...</div>;
   if (isError) return <div>Error: {error.message}</div>;
 
+  const handleOpenArticle = (url) => {
+    window.open(url, "_blank");
+  };
+
   return (
     <div>
-      <h2>Articles</h2>
+      <h2 className="text-xl font-bold">Articles</h2>
       <ul>
         {data && data.length > 0 ? (
-          data.map((article) => <li key={article.id}>{article.title}</li>)
+          data.map((article) => (
+            <li
+              key={article.id}
+              className="hover:underline cursor-pointer mt-2"
+              onClick={() => handleOpenArticle(article.url)}
+            >
+              {article.title}
+            </li>
+          ))
         ) : (
           <li>No articles found.</li>
         )}
