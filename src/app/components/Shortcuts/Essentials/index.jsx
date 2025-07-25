@@ -6,9 +6,8 @@ import linkedinIcon from "../../../assets/svgs/linkedin.svg";
 import Image from "next/image";
 import AddShortcutDialog from "@/app/components/AddShortcutDialog";
 
-const openInNewTab = (url) => {
-  console.log("Opening URL:", url);
-  window.open(url, "_blank", "noopener,noreferrer");
+const openInSameTab = (url) => {
+  window.location.href = url;
 };
 
 export default function EssentialShortcuts() {
@@ -46,7 +45,7 @@ export default function EssentialShortcuts() {
       {links.map((link, index) => (
         <button
           key={index}
-          onClick={() => openInNewTab(link.link)}
+          onClick={() => openInSameTab(link.link)}
           title={link.name}
           className="cursor-pointer"
         >
