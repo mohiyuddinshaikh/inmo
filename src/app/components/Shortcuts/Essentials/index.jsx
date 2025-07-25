@@ -7,7 +7,8 @@ import Image from "next/image";
 import AddShortcutDialog from "@/app/components/AddShortcutDialog";
 
 const openInSameTab = (url) => {
-  window.location.href = url;
+  // window.location.href = url;
+  window.open(url, "_top");
 };
 
 export default function EssentialShortcuts() {
