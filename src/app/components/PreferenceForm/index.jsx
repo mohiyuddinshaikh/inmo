@@ -52,6 +52,7 @@ export default function PreferenceForm({ tags }) {
         <Button
           className="w-2xl p-4 text-md mt-8 rounded-2xl cursor-pointer"
           onClick={handleSaveTags}
+          disabled={selectedTags.length === 0}
         >
           Save
         </Button>
