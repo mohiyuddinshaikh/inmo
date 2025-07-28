@@ -29,18 +29,18 @@ export default function PreferenceForm({ tags }) {
 
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold mb-8 text-center">Preferences</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center">
+        Select your Interests
+      </h1>
       <div className="flex flex-col gap-4 justify-center items-center">
         <ul className="flex flex-wrap gap-4 justify-center">
           {tags.map((tag) => (
             <li
               key={tag.id}
               className={classnames(
-                "p-4 rounded-3xl cursor-pointer text-white bg-gray-600 font-bold",
+                "p-4 rounded-3xl cursor-pointer text-white bg-gray-600 font-bold hover:bg-gray-800 hover:text-orange-500 transition-all duration-300 select-none",
                 {
-                  "bg-gray-800 !text-orange-500 ": selectedTags.includes(
-                    tag.id
-                  ),
+                  "bg-gray-800 !text-orange-500": selectedTags.includes(tag.id),
                 }
               )}
               onClick={() => handleTagClick(tag.id)}
