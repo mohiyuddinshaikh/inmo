@@ -5,9 +5,13 @@ import { useEffect } from "react";
 import SignInWithGoogle from "./components/SignInWithGoogle";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import useUserStore from "../lib/userStore";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const { data: session } = useSession();
+  const setUser = useUserStore((state) => state.setUser);
+  const router = useRouter();
   useEffect(() => {
     const fetchUsers = async () => {
       if (!session?.user?.email) return;
@@ -15,9 +19,9 @@ export default function Home() {
         const response = await axios.get("/api/users", {
           params: { email: session.user.email },
         });
-        console.log(" user data", response.data);
+        setUser(response.data); // Add user to Zustand store
       } catch (error) {
-        console.error("Error fetching user:", error);
+        // Error already logged in createPreference
       }
     };
     fetchUsers();
@@ -29,10 +33,8 @@ export default function Home() {
         userId,
         tags,
       });
-      console.log("Preference created:", response.data);
       return response.data;
     } catch (error) {
-      console.error("Error creating preference:", error);
       throw error;
     }
   };
@@ -42,25 +44,16 @@ export default function Home() {
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
         <SignInWithGoogle />
         <button
-          onClick={async () => {
-            const userId = "6888a7a858d24241553368db";
-            const tags = [123];
-            try {
-              const result = await createPreference(userId, tags);
-              console.log("Created preference:", result);
-            } catch (e) {
-              // Error already logged in createPreference
-            }
-          }}
+          onClick={() => router.push("/preferences")}
           style={{
             padding: "8px 16px",
-            background: "#333",
+            background: "#0070f3",
             color: "#fff",
             borderRadius: "4px",
-            marginBottom: "16px",
+            marginBottom: "8px",
           }}
         >
-          Create Preference (Hardcoded)
+          Go to Preferences
         </button>
         <EssentialShortcuts />
         <CardsSection />

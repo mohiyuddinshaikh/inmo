@@ -4,16 +4,13 @@ import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import classnames from "classnames";
 import { toast } from "sonner";
-import { useSession } from "next-auth/react";
 import axios from "axios";
+import useUserStore from "@/lib/userStore";
 
 export default function PreferenceForm({ tags }) {
-  const { data: session } = useSession();
-  const user = session?.user;
-  console.log("user here", user);
+  const user = useUserStore((state) => state.user);
 
   const [selectedTags, setSelectedTags] = useState([]);
-  console.log("selectedTags", selectedTags);
 
   const [loading, setLoading] = useState(false);
 
@@ -39,7 +36,7 @@ export default function PreferenceForm({ tags }) {
     setLoading(true);
     try {
       const res = await axios.post("/api/preferences", {
-        userId: user.id || user._id,
+        userId: user._id,
         tags: selectedTags,
       });
       toast.success("Preferences saved successfully!");
