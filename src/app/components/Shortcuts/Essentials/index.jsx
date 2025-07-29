@@ -34,8 +34,6 @@ export default function EssentialShortcuts() {
     },
   ]);
 
-  console.log("links", links);
-
   return (
     <div className="flex gap-4 p-2 bg-gray-100 rounded-xl">
       <AddShortcutDialog

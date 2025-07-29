@@ -10,4 +10,16 @@ export const authOptions = {
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  callbacks: {
+    async signIn({ user, account, profile }) {
+      const { connectDB } = await import("@/lib/db");
+      const { User } = await import("@/app/models/User");
+      await connectDB();
+      const existingUser = await User.findOne({ email: user.email });
+      if (!existingUser) {
+        await User.create({ name: user.name, email: user.email });
+      }
+      return true;
+    },
+  },
 };

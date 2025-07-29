@@ -4,10 +4,23 @@ import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import classnames from "classnames";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
 export default function PreferenceForm({ tags }) {
-  const handleSaveTags = () => {
+  const { data: session } = useSession();
+  const user = session?.user;
+
+  const handleSaveTags = async () => {
+    const { connectDB } = await import("@/lib/db");
+    const { Preferences } = await import("@/app/models/Preferences");
+    await connectDB();
+    const newPreferences = new Preferences({
+      tags: selectedTags,
+      user: user.id,
+    });
+    await newPreferences.save();
     console.log("save");
+    toast.success("Preferences saved successfully");
   };
 
   const [selectedTags, setSelectedTags] = useState([]);
