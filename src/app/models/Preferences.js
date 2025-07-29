@@ -5,7 +5,7 @@ const preferencesSchema = new mongoose.Schema({
     type: [Number],
     required: true,
   },
-  user: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,

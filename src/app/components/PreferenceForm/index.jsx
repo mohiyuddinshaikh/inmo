@@ -5,26 +5,17 @@ import React, { useState } from "react";
 import classnames from "classnames";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
+import axios from "axios";
 
 export default function PreferenceForm({ tags }) {
   const { data: session } = useSession();
   const user = session?.user;
-
-  const handleSaveTags = async () => {
-    const { connectDB } = await import("@/lib/db");
-    const { Preferences } = await import("@/app/models/Preferences");
-    await connectDB();
-    const newPreferences = new Preferences({
-      tags: selectedTags,
-      user: user.id,
-    });
-    await newPreferences.save();
-    console.log("save");
-    toast.success("Preferences saved successfully");
-  };
+  console.log("user here", user);
 
   const [selectedTags, setSelectedTags] = useState([]);
   console.log("selectedTags", selectedTags);
+
+  const [loading, setLoading] = useState(false);
 
   const handleTagClick = (tagId) => {
     setSelectedTags((prevSelected) => {
@@ -38,6 +29,28 @@ export default function PreferenceForm({ tags }) {
       }
       return [...prevSelected, tagId];
     });
+  };
+
+  const handleSaveTags = async () => {
+    if (!user) {
+      toast.error("You must be signed in to save preferences.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await axios.post("/api/preferences", {
+        userId: user.id || user._id,
+        tags: selectedTags,
+      });
+      toast.success("Preferences saved successfully!");
+    } catch (err) {
+      const errorMsg =
+        err.response?.data?.error ||
+        "An error occurred while saving preferences.";
+      toast.error(errorMsg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,9 +78,9 @@ export default function PreferenceForm({ tags }) {
         <Button
           className="w-2xl p-4 text-md mt-8 rounded-2xl cursor-pointer"
           onClick={handleSaveTags}
-          disabled={selectedTags.length === 0}
+          disabled={selectedTags.length === 0 || loading}
         >
-          Save
+          {loading ? "Saving..." : "Save"}
         </Button>
       </div>
     </div>
