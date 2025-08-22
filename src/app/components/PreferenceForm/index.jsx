@@ -5,10 +5,11 @@ import React, { useState } from "react";
 import classnames from "classnames";
 import { toast } from "sonner";
 import axios from "axios";
-import useUserStore from "@/lib/userStore";
+import { useSelector } from 'react-redux';
+import { selectUser } from "@/lib/userSlice";
 
 export default function PreferenceForm({ tags }) {
-  const user = useUserStore((state) => state.user);
+  const user = useSelector(selectUser);
 
   const [selectedTags, setSelectedTags] = useState([]);
 

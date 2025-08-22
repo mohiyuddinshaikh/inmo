@@ -27,10 +27,12 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SessionProviderWrapper>
-          <AuthGuard>
-            <Toaster richColors />
-            <Providers>{children}</Providers>
-          </AuthGuard>
+          <Providers>
+            <AuthGuard>
+              <Toaster richColors />
+              {children}
+            </AuthGuard>
+          </Providers>
         </SessionProviderWrapper>
       </body>
     </html>

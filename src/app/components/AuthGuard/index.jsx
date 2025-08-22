@@ -1,31 +1,61 @@
-// components/AuthGuard.tsx
+// components/AuthGuard.jsx
 "use client";
 
-import useUserStore from "@/lib/userStore";
 import { useSession } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser, selectUser } from "@/lib/userSlice";
+
+function getRedirectPath({ hasToken, hasPreference, pathname }) {
+  if (!hasToken) return "/auth";
+  if (hasToken && !hasPreference && pathname !== "/preferences")
+    return "/preferences";
+  if (
+    hasToken &&
+    hasPreference &&
+    (pathname === "/auth" || pathname === "/preferences")
+  )
+    return "/"; // default home/dashboard
+  return null; // stay where you are
+}
 
 export default function AuthGuard({ children }) {
+  const dispatch = useDispatch();
   const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
-  const { user } = useUserStore();
+  const user = useSelector(selectUser);
+  const userStatus = useSelector((state) => state.user.status);
 
+  // fetch user when session is available
   useEffect(() => {
-    if (status === "loading") return; // wait until session loads
-    console.log("user", status, user, status);
-    const hasToken = !!session;
-    const hasPreference = user?.preferences;
-
-    if (!hasToken && pathname !== "/auth") {
-      router.replace("/auth");
-    } else if (hasToken && !hasPreference && pathname !== "/preferences") {
-      router.replace("/preferences");
-    } else if (hasToken && pathname === "/auth") {
-      router.replace("/");
+    if (session?.user?.email) {
+      dispatch(fetchUser(session.user.email));
     }
-  }, [status, session, pathname, router, user]);
+  }, [session, dispatch]);
+
+  // handle redirects
+  useEffect(() => {
+    if (status === "loading" || userStatus === "loading") return;
+
+    const hasToken = !!session;
+    const hasPreference = !!user?.preferences;
+
+    const redirectTo = getRedirectPath({
+      hasToken,
+      hasPreference,
+      pathname,
+    });
+
+    if (redirectTo && redirectTo !== pathname) {
+      router.replace(redirectTo);
+    }
+  }, [status, userStatus, session, pathname, router, user]);
+
+  if (status === "loading" || userStatus === "loading") {
+    return null; // or a spinner
+  }
 
   return <>{children}</>;
 }

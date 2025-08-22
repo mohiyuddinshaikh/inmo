@@ -5,27 +5,14 @@ import { useEffect } from "react";
 import SignInWithGoogle from "./components/SignInWithGoogle";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import useUserStore from "../lib/userStore";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { fetchUser } from "@/lib/userSlice";
 
 export default function Home() {
   const { data: session } = useSession();
-  const setUser = useUserStore((state) => state.setUser);
+  const dispatch = useDispatch();
   const router = useRouter();
-  useEffect(() => {
-    const fetchUsers = async () => {
-      if (!session?.user?.email) return;
-      try {
-        const response = await axios.get("/api/users", {
-          params: { email: session.user.email },
-        });
-        setUser(response.data); // Add user to Zustand store
-      } catch (error) {
-        // Error already logged in createPreference
-      }
-    };
-    fetchUsers();
-  }, [session]);
 
   const createPreference = async (userId, tags) => {
     try {
