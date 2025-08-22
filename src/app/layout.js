@@ -3,6 +3,7 @@ import "./globals.css";
 import Providers from "./components/Providers";
 import { Toaster } from "sonner";
 import SessionProviderWrapper from "./components/SessionProviderWrapper";
+import AuthGuard from "./components/AuthGuard";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,8 +27,10 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SessionProviderWrapper>
-          <Toaster richColors />
-          <Providers>{children}</Providers>
+          <AuthGuard>
+            <Toaster richColors />
+            <Providers>{children}</Providers>
+          </AuthGuard>
         </SessionProviderWrapper>
       </body>
     </html>
