@@ -5,27 +5,29 @@ import React, { useState } from "react";
 import classnames from "classnames";
 import { toast } from "sonner";
 import axios from "axios";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 import { selectUser } from "@/lib/userSlice";
+import { useRouter } from "next/navigation";
 
 export default function PreferenceForm({ tags }) {
   const user = useSelector(selectUser);
+  const router = useRouter();
 
   const [selectedTags, setSelectedTags] = useState([]);
 
   const [loading, setLoading] = useState(false);
 
-  const handleTagClick = (tagId) => {
+  const handleTagClick = (tagName) => {
     setSelectedTags((prevSelected) => {
-      const isSelected = prevSelected.includes(tagId);
+      const isSelected = prevSelected.includes(tagName);
       if (isSelected) {
-        return prevSelected.filter((id) => id !== tagId);
+        return prevSelected.filter((name) => name !== tagName);
       }
       if (!isSelected && prevSelected.length >= 3) {
         toast.warning("You can select up to 3 preferences only.");
         return prevSelected;
       }
-      return [...prevSelected, tagId];
+      return [...prevSelected, tagName];
     });
   };
 
@@ -41,6 +43,8 @@ export default function PreferenceForm({ tags }) {
         tags: selectedTags,
       });
       toast.success("Preferences saved successfully!");
+      setSelectedTags([]);
+      router.push("/");
     } catch (err) {
       const errorMsg =
         err.response?.data?.error ||
@@ -64,10 +68,12 @@ export default function PreferenceForm({ tags }) {
               className={classnames(
                 "p-4 rounded-3xl cursor-pointer text-white bg-gray-600 font-bold hover:bg-gray-800 hover:text-orange-500 transition-all duration-300 select-none",
                 {
-                  "bg-gray-800 !text-orange-500": selectedTags.includes(tag.id),
+                  "bg-gray-800 !text-orange-500": selectedTags.includes(
+                    tag.name
+                  ),
                 }
               )}
-              onClick={() => handleTagClick(tag.id)}
+              onClick={() => handleTagClick(tag.name)}
             >
               {tag.name}
             </li>

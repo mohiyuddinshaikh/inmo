@@ -12,7 +12,6 @@ import { useSession } from "next-auth/react";
 export default function Header() {
   const handleLogout = () => {
     signOut({ callbackUrl: "/auth" });
-    console.log("Logging out...");
   };
 
   const { data: session } = useSession();

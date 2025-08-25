@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const preferencesSchema = new mongoose.Schema({
   tags: {
-    type: [Number],
+    type: [String],
     required: true,
   },
   userId: {
