@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAppSelector } from "@/lib/store";
+import axios from "axios";
 
 const THREE_HOURS_MS = 3 * 60 * 60 * 1000;
 
@@ -17,14 +18,17 @@ export default function CardsSection() {
     queryFn: async () => {
       if (!tags.length) return [];
 
-      const params = new URLSearchParams({
-        tags: tags.join(","),
-        top: top.toString(),
-        page: page.toString(),
+      const response = await axios.get('/api/articles', {
+        params: {
+          tags: tags.join(","),
+          top: top.toString(),
+          page: page.toString(),
+        },
+        headers: {
+          'x-user-id': user?._id || 'anonymous',
+        },
       });
-      const response = await fetch(`/api/articles?${params.toString()}`);
-      if (!response.ok) throw new Error("Network response was not ok");
-      return response.json();
+      return response.data;
     },
     enabled: tags.length > 0, // Only run the query if we have tags
     cacheTime: THREE_HOURS_MS,

@@ -16,6 +16,9 @@ export async function GET(request) {
 
   // Parse tags from comma-separated string and take first 3
   const tags = tagsParam.split(",").slice(0, 3);
+  
+  // Get or generate a seed for consistent ordering
+  const seed = request.headers.get('x-user-id') || 'default-seed';
 
   try {
     // Make parallel API calls for each tag with allSettled
@@ -56,10 +59,22 @@ export async function GET(request) {
       }
     }
 
-    // Randomize the array using Fisher-Yates shuffle
-    for (let i = uniqueArticles.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [uniqueArticles[i], uniqueArticles[j]] = [uniqueArticles[j], uniqueArticles[i]];
+    // Sort by a consistent hash of the article ID to maintain stable order
+    uniqueArticles.sort((a, b) => {
+      const hashA = Math.abs(hashCode(a.id + seed));
+      const hashB = Math.abs(hashCode(b.id + seed));
+      return hashA - hashB;
+    });
+
+    // Helper function to generate consistent hash codes
+    function hashCode(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+      }
+      return hash;
     }
     
     return new Response(JSON.stringify(uniqueArticles), {
