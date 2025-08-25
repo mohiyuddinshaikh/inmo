@@ -17,7 +17,11 @@ export const authOptions = {
       await connectDB();
       const existingUser = await User.findOne({ email: user.email });
       if (!existingUser) {
-        await User.create({ name: user.name, email: user.email });
+        await User.create({
+          name: user.name,
+          email: user.email,
+          profileImage: user.image,
+        });
       }
       return true;
     },

@@ -20,8 +20,8 @@ export async function GET(request) {
 export async function POST(request) {
   await connectDB();
   const body = await request.json();
-  const { name, email } = body;
-  const newUser = new User({ name, email });
+  const { name, email, profileImage } = body;
+  const newUser = new User({ name, email, profileImage });
   await newUser.save();
   return Response.json(newUser, { status: 201 });
 }
