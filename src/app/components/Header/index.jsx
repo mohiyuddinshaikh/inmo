@@ -18,7 +18,7 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-16 flex justify-between items-center px-4 shadow-md bg-white">
-      <h1 className="text-xl font-semibold">Inmo</h1>
+      <h1 className="text-xl font-semibold">Inzo</h1>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

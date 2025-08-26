@@ -28,12 +28,12 @@ export default function AuthGuard({ children }) {
   const user = useSelector(selectUser);
   const userStatus = useSelector((state) => state.user.status);
 
-  // fetch user when session is available
+  // fetch user when session is available and user data isn't already loaded
   useEffect(() => {
-    if (session?.user?.email) {
+    if (session?.user?.email && userStatus !== 'succeeded' && userStatus !== 'loading') {
       dispatch(fetchUser(session.user.email));
     }
-  }, [session, dispatch]);
+  }, [session, dispatch, userStatus]);
 
   // handle redirects
   useEffect(() => {
