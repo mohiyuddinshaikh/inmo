@@ -2,6 +2,7 @@
 import { signIn } from "next-auth/react";
 
 export default function AuthPage() {
+  console.log("5.07");
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100">
       <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-lg">
