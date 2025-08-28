@@ -1,12 +1,10 @@
 import Redis from "ioredis";
 
-const redis = new Redis({
-  host: process.env.REDIS_HOST || "127.0.0.1",
-  port: process.env.REDIS_PORT || 6379,
+const redis = new Redis(process.env.REDIS_URL, {
   retryStrategy: (times) => {
     // Don't retry after 3 attempts
     if (times > 3) {
-      console.error('Max Redis connection attempts reached');
+      console.error("Max Redis connection attempts reached");
       return null; // End reconnection
     }
     // Reconnect after
@@ -16,12 +14,12 @@ const redis = new Redis({
   enableOfflineQueue: false,
 });
 
-redis.on('connect', () => {
-  console.log('Connected to Redis');
+redis.on("connect", () => {
+  console.log("Connected to Redis");
 });
 
-redis.on('error', (err) => {
-  console.error('Redis error:', err);
+redis.on("error", (err) => {
+  console.error("Redis error:", err);
 });
 
 export default redis;
